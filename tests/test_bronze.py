@@ -4,12 +4,12 @@ from src.bronze.bronze import read_csv
 from config.schemas import SCHEMA
 from config.bronze_config import INGESTION_CONFIG
 
-
+#Getting Active Spark Session
 @pytest.fixture(scope="session")
 def spark():
     return SparkSession.getActiveSession()
 
-
+#Testing wether all files are being read or not.
 @pytest.mark.parametrize("item", INGESTION_CONFIG)
 def test_source_has_data(spark, item):
     df = read_csv(spark, item["path"], SCHEMA[item["table"]])
