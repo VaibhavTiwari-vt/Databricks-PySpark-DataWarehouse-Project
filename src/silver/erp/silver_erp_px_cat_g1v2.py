@@ -39,13 +39,7 @@ def load_silver_erp_px_cat_g1v2(df: DataFrame, table: str = "`databricks-project
     print(f">> Load complete: {table}")
 
 # Pipeline Entry Point
-def run_pipeline_erp_px_cat_g1v2(
-    spark,
-    source_table: str = "`databricks-project`.bronze.erp_px_cat_g1v2",
-    target_table: str = "`databricks-project`.silver.erp_px_cat_g1v2",
-) -> None:
-    """End-to-end ETL pipeline for silver.erp_px_cat_g1v2."""
-
+def run_pipeline_erp_px_cat_g1v2(spark,source_table: str = "`databricks-project`.bronze.erp_px_cat_g1v2",target_table: str = "`databricks-project`.silver.erp_px_cat_g1v2",) -> None:
     bronze_df = extract_bronze_erp_px_cat_g1v2(spark, source_table)
     silver_df = transform_erp_px_cat_g1v2(bronze_df)
     load_silver_erp_px_cat_g1v2(silver_df, target_table)

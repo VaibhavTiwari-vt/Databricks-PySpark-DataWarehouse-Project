@@ -18,9 +18,9 @@ def get_fact_sales_query() -> str:
             sd.sales_amount,
             sd.quantity,
             sd.price
-        FROM       `databricks-project`.silver.crm_sales_details   sd
-        LEFT JOIN  `databricks-project`.gold.dim_products          pr  ON sd.product_number = pr.product_number
-        LEFT JOIN  `databricks-project`.gold.dim_customers        cu  ON sd.customer_id    = cu.customer_id
+        FROM       `databricks-project`.silver.crm_sales_details sd
+        LEFT JOIN  `databricks-project`.gold.dim_products pr  ON sd.product_number = pr.product_number
+        LEFT JOIN  `databricks-project`.gold.dim_customers  cu  ON sd.customer_id    = cu.customer_id
     """
 
 def build_fact_sales(spark):
@@ -38,7 +38,6 @@ def write_fact_sales(df) -> None:
     )
     
 def run_facts_sales(spark) -> None:
-    """End-to-end pipeline: build → write."""
     df = build_fact_sales(spark)
     write_fact_sales(df)
     print("[fact_sales] Written to databricks-project.gold.fact_sales (overwrite/delta)")

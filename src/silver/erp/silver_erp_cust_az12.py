@@ -1,8 +1,8 @@
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame,SparkSession
 from pyspark.sql import functions as F
 
 # Extraction
-def extract_bronze_erp_cust_az12(spark, table: str = "`databricks-project`.bronze.erp_cust_az12") -> DataFrame:
+def extract_bronze_erp_cust_az12(spark: SparkSession, table: str = "`databricks-project`.bronze.erp_cust_az12") -> DataFrame:
     """Load source data from the bronze layer."""
     print(f">> Reading from: {table}")
     return spark.table(table)
@@ -10,10 +10,6 @@ def extract_bronze_erp_cust_az12(spark, table: str = "`databricks-project`.bronz
 def clean_cid_erp_cust_az12(col_name: str) -> F.Column:
     """
     Remove 'NAS' prefix from cid if present.
-    Mirrors:
-        CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid, 4, LEN(cid))
-             ELSE cid
-        END
     """
     col = F.col(col_name)
     return (
@@ -25,10 +21,6 @@ def clean_cid_erp_cust_az12(col_name: str) -> F.Column:
 def clean_bdate_erp_cust_az12(col_name: str) -> F.Column:
     """
     Set future birthdates to NULL.
-    Mirrors:
-        CASE WHEN bdate > GETDATE() THEN NULL
-             ELSE bdate
-        END
     """
     col = F.col(col_name)
     return (
@@ -40,11 +32,6 @@ def clean_bdate_erp_cust_az12(col_name: str) -> F.Column:
 def normalize_gender_erp_cust_az12(col_name: str) -> F.Column:
     """
     Normalize gender values to 'Female', 'Male', or 'n/a'.
-    Mirrors:
-        CASE WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'
-             WHEN UPPER(TRIM(gen)) IN ('M', 'MALE')   THEN 'Male'
-             ELSE 'n/a'
-        END
     """
     cleaned = F.upper(F.trim(F.col(col_name)))
     return (
@@ -80,13 +67,7 @@ def load_silver_erp_cust_az12(df: DataFrame, table: str = "`databricks-project`.
     )
     print(f">> Load complete: {table}")
 # Pipeline Entry Point
-def run_pipeline_erp_cust_az12(
-    spark,
-    source_table: str = "`databricks-project`.bronze.erp_cust_az12",
-    target_table: str = "`databricks-project`.silver.erp_cust_az12",
-) -> None:
-    """End-to-end ETL pipeline for silver.erp_cust_az12."""
-
+def run_pipeline_erp_cust_az12(spark: SparkSession,source_table: str = "`databricks-project`.bronze.erp_cust_az12",target_table: str = "`databricks-project`.silver.erp_cust_az12",) -> None:
     bronze_df = extract_bronze_erp_cust_az12(spark, source_table)
     silver_df = transform_erp_cust_az12(bronze_df)
     load_silver_erp_cust_az12(silver_df, target_table)

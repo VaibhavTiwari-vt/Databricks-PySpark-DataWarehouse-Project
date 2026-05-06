@@ -20,8 +20,8 @@ def get_dim_products_query() -> str:
             pn.product_cost,
             pn.product_line,
             pn.start_date
-        FROM       `databricks-project`.silver.crm_prd_info        pn
-        LEFT JOIN  `databricks-project`.silver.erp_px_cat_g1v2      pc  ON pn.category_id = pc.category_id
+        FROM `databricks-project`.silver.crm_prd_info pn
+        LEFT JOIN  `databricks-project`.silver.erp_px_cat_g1v2 pc  ON pn.category_id = pc.category_id
         WHERE pn.end_date IS NULL
     """
 
@@ -40,7 +40,6 @@ def write_dim_products(df) -> None:
     )
     
 def run_dim_products(spark) -> None:
-    """End-to-end pipeline: build → write."""
     df = build_dim_products(spark)
     write_dim_products(df)
     print(f"[dim_products] Written to databricks-project.gold.dim_products (overwrite/delta)")

@@ -79,13 +79,7 @@ def load_silver_crm_prd_info(df: DataFrame, table: str = "`databricks-project`.s
     print(f">> Load complete: {table}")
 
 # Pipeline Entry Point
-def run_pipeline_silver_crm_prd_info(
-    spark,
-    source_table: str = "`databricks-project`.bronze.crm_prd_info",
-    target_table: str = "`databricks-project`.silver.crm_prd_info",
-) -> None:
-    """End-to-end ETL pipeline for silver.crm_prd_info."""
-
+def run_pipeline_silver_crm_prd_info(spark,source_table: str = "`databricks-project`.bronze.crm_prd_info",target_table: str = "`databricks-project`.silver.crm_prd_info",) -> None:
     bronze_df = extract_bronze_crm_prd_info(spark, source_table)
     silver_df = transform_crm_prd_info(bronze_df)
     load_silver_crm_prd_info(silver_df, target_table)

@@ -12,8 +12,6 @@ def parse_int_to_date_crm_sales_details(col_name: str) -> F.Column:
     """
     Convert integer date columns (YYYYMMDD) to proper date type.
     Returns NULL if value is 0 or does not have exactly 8 digits.
-    Mirrors: CASE WHEN sls_order_dt = 0 OR LEN(sls_order_dt) != 8 THEN NULL
-                  ELSE CAST(CAST(sls_order_dt AS VARCHAR) AS DATE)
     """
     col = F.col(col_name)
     return (
@@ -103,12 +101,7 @@ def load_silver_crm_sales_details(df: DataFrame, table: str = "`databricks-proje
     print(f">> Load complete: {table}")
 
 # Pipeline Entry Point
-def run_pipeline_crm_sales_details(
-    spark,
-    source_table: str = "`databricks-project`.bronze.crm_sales_details",
-    target_table: str = "`databricks-project`.silver.crm_sales_details",
-) -> None:
-    """End-to-end ETL pipeline for silver.crm_sales_details."""
+def run_pipeline_crm_sales_details(spark,source_table: str = "`databricks-project`.bronze.crm_sales_details",target_table: str = "`databricks-project`.silver.crm_sales_details",) -> None:
 
     bronze_df = extract_bronze_crm_sales_details(spark, source_table)
     silver_df = transform_crm_sales_details(bronze_df)
