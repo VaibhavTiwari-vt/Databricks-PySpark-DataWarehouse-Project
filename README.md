@@ -44,7 +44,7 @@ Analytics / Reporting / BI
 
 # Repository Structure
 
-```text
+```text id="a2q7u0"
 Databricks-PySpark-DataWarehouse-Project/
 │
 ├── config/
@@ -62,7 +62,14 @@ Databricks-PySpark-DataWarehouse-Project/
 │   │
 │   ├── silver/
 │   │   ├── crm/
+│   │   │   ├── silver_crm_cust_info.py
+│   │   │   ├── silver_crm_prd_info.py
+│   │   │   └── silver_crm_sales_details.py
+│   │   │
 │   │   └── erp/
+│   │       ├── silver_erp_cust_az12.py
+│   │       ├── silver_erp_loc_a101.py
+│   │       └── silver_erp_px_cat_g1v2.py
 │   │
 │   └── gold/
 │       ├── gold_dim_customers.py
@@ -71,13 +78,29 @@ Databricks-PySpark-DataWarehouse-Project/
 │
 ├── tests/
 │   ├── bronze/
+│   │   └── test_bronze.py
+│   │
 │   ├── silver/
+│   │   ├── crm/
+│   │   │   ├── test_crm_cust_info.py
+│   │   │   ├── test_crm_prd_info.py
+│   │   │   └── test_crm_sales_details.py
+│   │   │
+│   │   └── erp/
+│   │       ├── test_erp_cust_az12.py
+│   │       ├── test_erp_loc_a101.py
+│   │       └── test_erp_px_cat_g1v2.py
+│   │
 │   └── gold/
+│       ├── test_dim_customers.py
+│       ├── test_dim_products.py
+│       └── test_facts_sales.py
 │
 ├── conftest.py
 ├── pytest.ini
 └── README.md
 ```
+
 
 ---
 
