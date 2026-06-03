@@ -1,5 +1,5 @@
 
-def get_dim_customers_query() -> str:
+def get_dim_customers_query(crm_cust_table,erp_cust_table,erp_loc_table) -> str:
     """
     Builds the SELECT query for gold.dim_customers.
     Business Rules
@@ -22,14 +22,14 @@ def get_dim_customers_query() -> str:
             END AS gender,
             ca.birth_date AS birthdate,
             ci.created_date AS create_date
-        FROM `databricks-project`.silver.crm_cust_info ci
-        LEFT JOIN  `databricks-project`.silver.erp_cust_az12 ca  ON ci.customer_number = ca.customer_number
-        LEFT JOIN  `databricks-project`.silver.erp_loc_a101 la  ON ci.customer_number = la.customer_number
+        FROM {crm_cust_table} ci
+        LEFT JOIN  {erp_cust_table} ca  ON ci.customer_number = ca.customer_number
+        LEFT JOIN  {erp_loc_table} la  ON ci.customer_number = la.customer_number
     """
 
 def build_dim_customers(spark):
     """Executes the query and returns a DataFrame."""
-    query = get_dim_customers_query()
+    query = get_dim_customers_query("`databricks-project`.silver.crm_cust_info","`databricks-project`.silver.erp_cust_az12","`databricks-project`.silver.erp_loc_a101")
     return spark.sql(query)
 
 def write_dim_customers(df) -> None:

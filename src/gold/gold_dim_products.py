@@ -1,4 +1,4 @@
-def get_dim_products_query() -> str:
+def get_dim_products_query(crm_table,erp_table) -> str:
     """
     Builds the SELECT query for gold.dim_products.
     Business Rules
@@ -7,7 +7,7 @@ def get_dim_products_query() -> str:
     - Active only : Historical records (prd_end_dt IS NOT NULL) are excluded.
     - category    : Enriched from ERP category table joined on cat_id.
     """
-    return """
+    return f"""
         SELECT
             ROW_NUMBER() OVER (ORDER BY pn.start_date, pn.product_number)   AS product_key,
             pn.product_id,
@@ -20,14 +20,14 @@ def get_dim_products_query() -> str:
             pn.product_cost,
             pn.product_line,
             pn.start_date
-        FROM `databricks-project`.silver.crm_prd_info pn
-        LEFT JOIN  `databricks-project`.silver.erp_px_cat_g1v2 pc  ON pn.category_id = pc.category_id
+        FROM {crm_table} pn
+        LEFT JOIN  {erp_table} pc  ON pn.category_id = pc.category_id
         WHERE pn.end_date IS NULL
     """
 
 def build_dim_products(spark):
     """Executes the query and returns a DataFrame."""
-    query = get_dim_products_query()
+    query = get_dim_products_query("`databricks-project`.silver.crm_prd_info","`databricks-project`.silver.erp_px_cat_g1v2")
     return spark.sql(query)
 
 def write_dim_products(df) -> None:

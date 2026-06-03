@@ -1,4 +1,4 @@
-def get_fact_sales_query() -> str:
+def get_fact_sales_query(crm_table,dim_products,dim_customers) -> str:
     """
     Builds the SELECT query for gold.fact_sales.
     Business Rules
@@ -7,7 +7,7 @@ def get_fact_sales_query() -> str:
     - customer_key : Resolved from gold.dim_customers via customer_id.
     - No date filter: All sales records are included (historical + current).
     """
-    return """
+    return f"""
         SELECT
             sd.order_number,
             pr.product_key,
@@ -18,14 +18,14 @@ def get_fact_sales_query() -> str:
             sd.sales_amount,
             sd.quantity,
             sd.price
-        FROM       `databricks-project`.silver.crm_sales_details sd
-        LEFT JOIN  `databricks-project`.gold.dim_products pr  ON sd.product_number = pr.product_number
-        LEFT JOIN  `databricks-project`.gold.dim_customers  cu  ON sd.customer_id    = cu.customer_id
+        FROM      {crm_table}  sd
+        LEFT JOIN  {dim_products} pr  ON sd.product_number = pr.product_number
+        LEFT JOIN   {dim_customers} cu  ON sd.customer_id    = cu.customer_id
     """
 
 def build_fact_sales(spark):
     """Executes the query and returns a DataFrame."""
-    query = get_fact_sales_query()
+    query = get_fact_sales_query("`databricks-project`.silver.crm_sales_details","`databricks-project`.gold.dim_products","`databricks-project`.gold.dim_customers")
     return spark.sql(query)
 
 def write_fact_sales(df) -> None:
