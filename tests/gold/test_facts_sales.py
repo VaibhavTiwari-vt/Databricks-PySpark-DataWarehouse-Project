@@ -25,16 +25,16 @@ DimCustomersSchema = "customer_key int, customer_id int"
 @pytest.fixture(scope="session")
 def crm_sales_df(spark):
     rows = [
-        # Fully resolvable — both product and customer match
+        # Fully resolvable - both product and customer match
         ("SO-001", "P001", 1, date(2023, 1, 10), date(2023, 1, 15), date(2023, 1, 20), 299.99, 2, 149.99),
         ("SO-002", "P002", 2, date(2022, 6, 5),  date(2022, 6, 10), date(2022, 6, 15), 49.99,  1, 49.99),
-        # product_number has no dim_products match → product_key should be NULL
+        # product_number has no dim_products match -> product_key should be NULL
         ("SO-003", "PXXX", 1, date(2023, 3, 1),  date(2023, 3, 5),  date(2023, 3, 10), 15.00,  3, 5.00),
-        # customer_id has no dim_customers match → customer_key should be NULL
+        # customer_id has no dim_customers match -> customer_key should be NULL
         ("SO-004", "P001", 999, date(2023, 4, 1), date(2023, 4, 3),  date(2023, 4, 5),  75.00,  1, 75.00),
-        # Both FK unresolvable → both keys NULL, row still present
+        # Both FK unresolvable -> both keys NULL, row still present
         ("SO-005", "PYYY", 888, date(2021, 12, 1),date(2021, 12, 3), date(2021, 12, 7), 10.00,  1, 10.00),
-        # Historical record — included without any date filter
+        # Historical record - included without any date filter
         ("SO-006", "P002", 2, date(2018, 7, 4),  date(2018, 7, 9),  date(2018, 7, 14), 99.99,  2, 49.99),
     ]
     return spark.createDataFrame(rows, schema=CrmSalesSchema)
